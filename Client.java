@@ -7,7 +7,6 @@ public class Client {
         addContact("Armen", "077-77-77-77");
         searchByName("Poghosik");
         searchAll("Armen");
-
     }
 
     private static void getAndPrintAllContacts() throws Exception {
