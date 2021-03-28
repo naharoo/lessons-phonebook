@@ -1,8 +1,5 @@
 import java.io.*;
 import java.util.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 public class Phonebook {
 
     private static final int INITIAL_CAPACITY = 10;

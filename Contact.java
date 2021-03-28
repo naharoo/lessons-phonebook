@@ -1,7 +1,3 @@
-import java.io.*;
-import java.util.*;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 public class Contact {
 

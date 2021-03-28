@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -14,11 +13,9 @@ public class Server {
             Socket socket = ss.accept();
 
             new Thread(new CommandExecutor(socket, pb)).start();
-            
         }
     }
 }
-
 class CommandExecutor implements Runnable {
 
     private final Phonebook pb;
@@ -62,6 +59,41 @@ class CommandExecutor implements Runnable {
                     pb.addContact(new Contact(contactAsLine));
 
                     ps.println("ADDED");
+                    ps.println("EOF");
+                    break;
+                }
+                case "SEARCH": {
+                    String searchTarget = br.readLine();
+                    String message = "No such contact found";
+
+                    for (int i = 0; i< pb.getCount(); i++){
+                        if(contacts[i].getName().equals(searchTarget)){
+                            message = contacts[i].toString();
+                            break;
+                        }   
+                    }
+
+                    ps.println(message);
+                    ps.println("EOF");
+                    break;
+                }
+                case "SEARCH ALL":{
+                    String searchTarget = br.readLine();
+                    String message = "No such contact found";
+                    StringBuilder allMatches = new StringBuilder();
+
+                    for(int i = 0; i< pb.getCount(); i++){
+                        if(contacts[i].getName().equals(searchTarget)){
+                            allMatches.append(contacts[i].toString() + "\n");
+                        }
+                    }
+
+                    if (allMatches.length() == 0){
+                        ps.println(message);
+                    }else{
+                        ps.println(allMatches);
+                    }
+
                     ps.println("EOF");
                     break;
                 }
