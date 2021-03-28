@@ -17,10 +17,7 @@ public class Client {
         BufferedReader br = getBufferedReader(socket);
 
         ps.println("GET ALL CONTACTS");
-        String line = null;
-        while (!"EOF".equals(line = br.readLine())) {
-            System.out.println(line);
-        }
+        getResaultFromServer(br);
 
         socket.close();
     }
