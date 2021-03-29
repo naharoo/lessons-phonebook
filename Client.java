@@ -15,7 +15,7 @@ public class Client {
         PrintStream ps = getPrintStream(socket);        
         BufferedReader br = getBufferedReader(socket);
 
-        ps.println("GET ALL CONTACTS");
+        ps.println(Command.GET_ALL_CONTACTS);
         getResaultFromServer(br);
 
         socket.close();
@@ -27,7 +27,7 @@ public class Client {
         PrintStream ps = getPrintStream(socket);        
         BufferedReader br = getBufferedReader(socket);
 
-        ps.println("ADD CONTACT");
+        ps.println(Command.ADD_CONTACT);
         ps.println(name + " - " + phoneNumber);
 
         getResaultFromServer(br);
@@ -41,7 +41,7 @@ public class Client {
         PrintStream ps = getPrintStream(socket);        
         BufferedReader br = getBufferedReader(socket);
 
-        ps.println("SEARCH");
+        ps.println(Command.SEARCH);
         ps.println(name);
 
         getResaultFromServer(br);
@@ -55,7 +55,7 @@ public class Client {
         PrintStream ps = getPrintStream(socket);        
         BufferedReader br = getBufferedReader(socket);
 
-        ps.println("SEARCH ALL");
+        ps.println(Command.SEARCH_ALL);
         ps.println(name);
 
         getResaultFromServer(br);

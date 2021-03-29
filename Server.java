@@ -34,7 +34,7 @@ class CommandExecutor implements Runnable {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
 
-            String command = br.readLine();
+            Command command = Command.valueOf(br.readLine());
             System.out.printf("Received command: %s from Socket: %s\n", command, socket);
 
             if (command == null) {
@@ -44,15 +44,15 @@ class CommandExecutor implements Runnable {
             OutputStream os = socket.getOutputStream();
             PrintStream ps = new PrintStream(os, true);
 
-            switch (command.toUpperCase()) {
-                case "GET ALL CONTACTS": {
+            switch (command) {
+                case GET_ALL_CONTACTS: {
                     for (int i = 0; i < pb.getCount(); i++) {
                         ps.println(contacts[i].toString());
                     }
                     ps.println("EOF");
                     break;
                 }
-                case "ADD CONTACT": {
+                case ADD_CONTACT: {
                     String contactAsLine = br.readLine();
                     System.out.println(contactAsLine);
 
@@ -62,7 +62,7 @@ class CommandExecutor implements Runnable {
                     ps.println("EOF");
                     break;
                 }
-                case "SEARCH": {
+                case SEARCH: {
                     String searchTarget = br.readLine();
                     String message = "No such contact found";
 
@@ -77,7 +77,7 @@ class CommandExecutor implements Runnable {
                     ps.println("EOF");
                     break;
                 }
-                case "SEARCH ALL":{
+                case SEARCH_ALL:{
                     String searchTarget = br.readLine();
                     String message = "No such contact found";
                     StringBuilder allMatches = new StringBuilder();
