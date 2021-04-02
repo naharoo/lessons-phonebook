@@ -12,7 +12,4 @@ public enum Command {
         this.message = message;
     }
     
-    public String getMessage(){
-        return message;
-    }
 }
