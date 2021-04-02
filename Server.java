@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -14,11 +13,9 @@ public class Server {
             Socket socket = ss.accept();
 
             new Thread(new CommandExecutor(socket, pb)).start();
-            
         }
     }
 }
-
 class CommandExecutor implements Runnable {
 
     private final Phonebook pb;
@@ -33,11 +30,9 @@ class CommandExecutor implements Runnable {
     public void run() {
         Contact[] contacts = pb.getContacts();
         try {
-            InputStream is = socket.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
+            BufferedReader br = Util.getBufferedReader(socket);
 
-            String command = br.readLine();
+            Command command = Command.valueOf(br.readLine());
             System.out.printf("Received command: %s from Socket: %s\n", command, socket);
 
             if (command == null) {
@@ -47,21 +42,73 @@ class CommandExecutor implements Runnable {
             OutputStream os = socket.getOutputStream();
             PrintStream ps = new PrintStream(os, true);
 
-            switch (command.toUpperCase()) {
-                case "GET ALL CONTACTS": {
+            switch (command) {
+                case GET_ALL_CONTACTS: {
                     for (int i = 0; i < pb.getCount(); i++) {
                         ps.println(contacts[i].toString());
                     }
                     ps.println("EOF");
                     break;
                 }
-                case "ADD CONTACT": {
+                case ADD_CONTACT: {
                     String contactAsLine = br.readLine();
                     System.out.println(contactAsLine);
 
                     pb.addContact(new Contact(contactAsLine));
 
                     ps.println("ADDED");
+                    ps.println("EOF");
+                    break;
+                }
+                case SEARCH: {
+                    String searchTarget = br.readLine();
+                    String message = "No such contact found";
+
+                    for (int i = 0; i< pb.getCount(); i++){
+                        if(contacts[i].getName().equals(searchTarget)){
+                            message = contacts[i].toString();
+                            break;
+                        }   
+                    }
+
+                    ps.println(message);
+                    ps.println("EOF");
+                    break;
+                }
+                case SEARCH_ALL:{
+                    String searchTarget = br.readLine();
+                    String message = "No such contact found";
+                    StringBuilder allMatches = new StringBuilder();
+
+                    // String searchTarget = br.readLine();
+
+                    // StringBuilder allMatches = new StringBuilder("No such contact found");
+
+                    // for(int i = 0; i<pb.getCount(); i++){
+                    //     if (contacts[i].getName().equals(searchTarget) & allMatches.equals("No such contact found")){
+                    //         allMatches = null; 
+                    //     }else{
+                    //         allMatches.append(contacts[i].toString() + "\n");
+                    //     }
+                    // }
+
+                    // ps.println(allMatches);
+
+                    // ps.println("EOF");
+                    // break;
+
+                    for(int i = 0; i< pb.getCount(); i++){
+                        if(contacts[i].getName().equals(searchTarget)){
+                            allMatches.append(contacts[i].toString() + "\n");
+                        }
+                    }
+
+                    if (allMatches.length() == 0){
+                        ps.println(message);
+                    }else{
+                        ps.println(allMatches);
+                    }
+                
                     ps.println("EOF");
                     break;
                 }

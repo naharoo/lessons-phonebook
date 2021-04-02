@@ -1,55 +1,69 @@
 import java.net.Socket;
 import java.io.*;
-import java.util.Arrays;
 
 public class Client {
     public static void main(String[] args) throws Exception {
         getAndPrintAllContacts();
-        addContact();
-        getAndPrintAllContacts();
+        addContact("Armen", "077-77-77-77");
+        searchByName("Poghosik");
+        searchAll("Armen");
     }
 
     private static void getAndPrintAllContacts() throws Exception {
-        Socket socket = new Socket("127.0.0.1", 6666);
-        OutputStream os = socket.getOutputStream();
-        PrintStream ps = new PrintStream(os, true);
+        Socket socket = new Socket("localhost", 6666);
 
-        InputStream is = socket.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
+        PrintStream ps = Util.getPrintStream(socket);        
+        BufferedReader br = Util.getBufferedReader(socket);
 
-        ps.println("GET ALL CONTACTS");
-        String line = null;
-        while (!"EOF".equals(line = br.readLine())) {
-            System.out.println(line);
-        }
+        ps.println(Command.GET_ALL_CONTACTS);
+        Util.getResaultFromServer(br);
 
         socket.close();
     }
 
-    private static void addContact() throws Exception {
-        Socket socket = new Socket("127.0.0.1", 6666);
+    private static void addContact(String name, String phoneNumber) throws Exception {
+        Socket socket = new Socket("localhost", 6666);
 
-        OutputStream os = socket.getOutputStream();
-        PrintStream ps = new PrintStream(os, true);
+        PrintStream ps = Util.getPrintStream(socket);        
+        BufferedReader br = Util.getBufferedReader(socket);
 
-        InputStream is = socket.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
+        ps.println(Command.ADD_CONTACT);
+        ps.println(name + " - " + phoneNumber);
 
-        System.out.println(1);
-        ps.println("ADD CONTACT");
-        System.out.println(2);
-        ps.println("Poghosik - 011-23-42-78");
-        System.out.println(3);
-
-        String line = null;
-        while (!"EOF".equals(line = br.readLine())) {
-            System.out.println(line);
-        }
+        Util.getResaultFromServer(br);
 
         socket.close();
     }
+    
+    private static void searchByName(String name) throws Exception{
+        Socket socket = new Socket("localhost", 6666);
+
+        PrintStream ps = Util.getPrintStream(socket);        
+        BufferedReader br = Util.getBufferedReader(socket);
+
+        ps.println(Command.SEARCH);
+        ps.println(name);
+
+        Util.getResaultFromServer(br);
+
+        socket.close();
+    }
+
+    private static void searchAll(String name) throws Exception{
+        Socket socket = new Socket("localhost", 6666);
+
+        PrintStream ps = Util.getPrintStream(socket);        
+        BufferedReader br = Util.getBufferedReader(socket);
+
+        ps.println(Command.SEARCH_ALL);
+        ps.println(name);
+
+        Util.getResaultFromServer(br);
+
+        socket.close();
+
+    }
+
 }
 
 
